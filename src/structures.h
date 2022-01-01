@@ -7,4 +7,4 @@ struct Characters{
     uint8_t w = 16;
 };
 
-Characters hero;
+struct Characters hero;

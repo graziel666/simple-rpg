@@ -15,13 +15,22 @@ uint8_t previousGamepad;
 
 
 void anim();
+void initLevel();
 void input();
 void setPalette();
 
+const uint8_t* level = level1;
+
+uint8_t tileAt (int tileX, int tileY) {
+    return level[tileY*LEVEL_WIDTH + tileX];
+}
+
 void start(){
+    
     myPalette = 1;
-    hero.x=screenW/2;
-    hero.y=screenH/2;
+    initLevel();
+    //hero.x=screenW/2;
+    //hero.y=screenH/2;
 }
 
 void update () {
@@ -37,6 +46,19 @@ void update () {
 
     anim();
     *DRAW_COLORS = 0x1230;
+
+    for (int y = 0; y < LEVEL_HEIGHT; y++){
+        for(int x = 0; x < LEVEL_WIDTH; x++){
+            uint8_t tile = tileAt(x, y);
+            if (tile == TILE_WALL){
+                blitSub(tiles,x*tileSize, y*tileSize, tileSize,tileSize,0,0,48,tilesFlags);
+            }
+            if (tile == TILE_DOOR){
+                blitSub(tiles,x*tileSize, y*tileSize, tileSize,tileSize,32,0,48,tilesFlags);
+            }
+        }
+    }
+
     blitSub(hero_sp, hero.x, hero.y, hero.w, hero.h, animFrame*16, srcY, 64, heroFlags);
     
 
@@ -60,6 +82,19 @@ void setPalette() {
         PALETTE[2] = 0x433455;
         //character
         PALETTE[0] = 0xc5ccb8;
+    }
+}
+
+void initLevel () {
+    for (int y = 0; y < LEVEL_HEIGHT; y++){
+        for (int x = 0; x < LEVEL_WIDTH; x++){
+            uint8_t tile = tileAt(x,y);
+            if (tile == TILE_SPAWN){
+                hero.x = x*tileSize;
+                hero.y = y*tileSize;
+                return;
+            }
+        }
     }
 }
 

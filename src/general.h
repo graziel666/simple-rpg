@@ -4,4 +4,3 @@
 #include "sprites.h"
 #include "structures.h"
 #include "map.h"
-#include "map.c"
